@@ -1,0 +1,37 @@
+dist: trusty
+
+language: go
+
+go:
+  - "1.11.x"
+
+services:
+  - docker
+
+env:
+  global:
+    - LINUX_AMD64_FILE_NAME="EdgeControl"
+    - LINUX_AMD64_IMAGE_NAME="amd64"
+
+before_install:
+  - go version
+
+install:
+  - go get -t -v ./...
+
+before_script:
+  - go test
+
+script:
+  - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o $LINUX_AMD64_FILE_NAME
+
+before_deploy:
+  - env
+
+deploy:
+  - deploy:
+    provider: script
+    script: bash docker/deploy.sh
+    skip_cleanup: true
+    on:
+      tags: true

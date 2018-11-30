@@ -1,0 +1,31 @@
+{{template "header-menu" .}}
+<el-table
+    id="mainTable"
+    :data="tableData"
+    style="width: 100%">
+    <el-table-column prop="name" label="名称">
+        <template slot-scope="scope">
+            <a href="#" v-text="scope.row.name" @click="handleClick(scope.row)"></a>
+        </template>
+    </el-table-column>
+    <el-table-column prop="ckey" label="CKEY" width="180"></el-table-column>
+</el-table>
+
+{{template "footer" .}}
+<script>
+new Vue({
+    el: "#main",
+    data: function() {
+        var data = JSON.parse('{{.data}}');
+        return {
+            tableData: data
+        };
+    },
+    methods: {
+        handleClick: function(row) {
+            location.href = "/user/cluster/view/" + row.cid;
+        },
+    }
+})
+</script>
+{{template "ending" .}}
