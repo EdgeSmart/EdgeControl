@@ -1,0 +1,103 @@
+{{template "header" .}}
+
+    <el-tabs type="border-card" class="login" id="login">
+    <el-tab-pane>
+        <span slot="label"><i class="el-icon-tickets"></i>{{ .title }}账号登录</span>
+
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="用户名" prop="identity">
+            <el-input type="text" v-model="ruleForm.identity" autocomplete="off" placeholder="用户名/邮箱/手机号"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="token">
+            <el-input type="password" v-model="ruleForm.token" autocomplete="off" placeholder="密码"></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click.native="submitForm('ruleForm')">提交</el-button>
+            <el-button type="success" @click="goto('#')">注册</el-button>
+            <el-button type="text" @click="goto('#')">找回密码</el-button>
+        </el-form-item>
+        </el-form>
+
+    </el-tab-pane>
+    <el-tab-pane disabled>
+        <span slot="label"><i class="el-icon-menu"></i>扫码登录</span>
+    </el-tab-pane>
+    </el-tabs>
+
+{{template "footer" .}}
+
+<script>
+new Vue({
+    el: '#login',
+    data: function() {
+      var validateIdentity = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入用户名/邮箱/手机号'));
+        }
+        callback();
+      };
+      var validateToken = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          callback();
+        }
+      };
+      return {
+        ruleForm: {
+          identity: '',
+          token: '',
+        },
+        rules: {
+          identity: [
+            { validator: validateIdentity, trigger: 'blur' }
+          ],
+          token: [
+            { validator: validateToken, trigger: 'blur' }
+          ],
+        }
+      };
+    },
+    methods: {
+      submitForm: function(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios({
+              method: 'post',
+              url: '/login',
+              data: {
+                type: 'test',
+                identity: this[formName].identity,
+                token: this[formName].token
+              }
+            }).then((response) => {
+                if (response.data.status == 0) {
+                  if (window.location.pathname == '/login') {
+                    window.location.href = '/';
+                  } else {
+                    location.reload();
+                  }
+                } else {
+                  this.$message({
+                      showClose: true,
+                      message: response.data.message,
+                      type: 'error',
+                      duration: 0
+                  });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+          } else {
+            return false;
+          }
+        });
+      },
+      goto: function(url) {
+        window.location.href = url;
+      }
+    }
+  })
+</script>
+{{template "ending" .}}

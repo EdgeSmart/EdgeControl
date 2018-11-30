@@ -1,0 +1,100 @@
+{{define "head"}}<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ .title }}</title>
+  <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link rel="stylesheet" href="/statics/css/main.css">
+  <script src="//unpkg.com/vue/dist/vue.min.js"></script>
+  <script src="//unpkg.com/element-ui/lib/index.js"></script>
+  <script src="//unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<el-container>
+{{end}}
+
+
+{{define "header"}}{{template "head" .}}
+{{template "navMenu" .}}
+<el-container>
+  <el-main id="main">
+{{end}}
+
+
+{{define "header-menu"}}{{template "head" .}}
+{{template "navMenu" .}}
+<el-container>
+{{template "menu" .}}
+  <el-main id="main">
+{{end}}
+
+
+{{define "navMenu"}}
+<el-header id="header">
+  <el-menu
+    :default-active="activeIndex2"
+    class="el-menu-demo"
+    mode="horizontal"
+    @select="handleSelect"
+    background-color="#545c64"
+    text-color="#fff"
+    active-text-color="#ffd04b">
+
+    <el-menu-item index="/"><a href="/">首页</a></el-menu-item>
+
+    <el-menu-item index="/logout" style="float:right;"><a href="/logout">退出</a></el-menu-item>
+    <el-menu-item index="/my" style="float:right;"><a href="/my">个人设置</a></el-menu-item>
+    <el-submenu index="platform"  style="float:right;">
+      <template slot="title">工作台</template>
+      <el-menu-item index="/user"><a href="/user">用户平台</a></el-menu-item>
+      <el-menu-item index="/dev"><a href="/dev">开发者平台</a></el-menu-item>
+      <el-menu-item index="/admin"><a href="/admin">管理平台</a></el-menu-item>
+    </el-submenu>
+    
+  </el-menu>
+</el-header>
+{{end}}
+
+
+{{define "menu"}}
+<el-aside id="aside" width="200px">
+  </el-row>
+    <el-col :span="12">
+      <el-menu
+        class="el-menu-vertical-demo"
+        @open="handleOpen"
+        @close="handleClose"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b">
+        {{range $mainKey, $mainVal := .menu}}
+        <el-submenu index="menu-{{$mainKey}}">
+          <template slot="title">
+            <span>{{$mainVal.Text}}</span>
+          </template>
+          <el-menu-item-group>
+            {{range $nodeKey, $nodeVal := $mainVal.Nodes}}
+            <el-menu-item index="menu-node-{{$nodeKey}}"><a href="{{$nodeVal.URL}}">{{$nodeVal.Text}}</a></el-menu-item>
+            {{end}}
+          </el-menu-item-group>
+        </el-submenu>
+       {{end}}
+      </el-menu>
+    </el-col>
+  </el-row>
+</el-aside>
+{{end}}
+
+
+{{define "footer"}}
+      </el-main>
+    </el-container>
+  </el-container>
+</body>
+<script src="/statics/js/main.js"></script>
+{{end}}
+
+
+{{define "ending"}}
+</html>
+{{end}}
