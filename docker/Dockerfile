@@ -1,6 +1,6 @@
 FROM debian:buster-slim
-ADD EdgeControl /
-ADD conf/* /conf/
-ADD templates/* /templates/
+COPY EdgeControl /
+COPY conf/ /conf/
+COPY templates/ /templates/
 ENTRYPOINT ["/EdgeControl"]
 EXPOSE 8000
