@@ -42,10 +42,16 @@ func Request(method string, url string, query interface{}, post interface{}) ([]
 	request, err := http.NewRequest(method, reqURL, bytes.NewReader(postData))
 	if err != nil {
 		// todo: add log
+		return nil, err
 	}
 	response, err := client.Do(request)
-	bodyBytes, _ := ioutil.ReadAll(response.Body)
-	return bodyBytes, nil
+	if err != nil {
+		// todo: add log
+		return nil, err
+	}
+
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	return bodyBytes, err
 }
 
 func getURL(url string, query interface{}) (string, error) {

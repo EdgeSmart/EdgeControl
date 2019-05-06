@@ -45,6 +45,13 @@ func LoginCheck(ctx *gin.Context) {
 		// todo: add log
 	}
 	reqData, err := manager.Request("POST", "/user/login", nil, req)
+	if err != nil {
+		ctx.JSON(http.StatusOK, loginRes{
+			Status:  -1,
+			Message: "error: " + err.Error(),
+		})
+		return
+	}
 	manager := managerRes{}
 	err = json.Unmarshal(reqData, &manager)
 	if manager.Data.Token == "" {
