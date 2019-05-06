@@ -14,11 +14,11 @@ func LoginControl(ctx *gin.Context) {
 	if ctx.Writer.Status() == 200 {
 		if strings.Index(ctx.Request.RequestURI, "/login") != 0 {
 			session := sessions.Default(ctx)
-			token := session.Get("token")
-			switch token.(type) {
+			uidI := session.Get("uid")
+			switch uidI.(type) {
 			case string:
-				tokenStr := token.(string)
-				if tokenStr != "" {
+				uid := uidI.(string)
+				if uid != "" {
 					ctx.Next()
 					return
 				}

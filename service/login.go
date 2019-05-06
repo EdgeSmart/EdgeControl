@@ -1,32 +1,23 @@
 package service
 
 import (
-	"encoding/json"
+	"errors"
 	"net/http"
 
-	"github.com/EdgeSmart/EdgeControl/data/manager"
+	"github.com/EdgeSmart/EdgeControl/service/dao"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-type loginReq struct {
+type loginInfo struct {
 	Type     string `json:"type"`
 	Identity string `json:"identity"`
 	Token    string `json:"token"`
 }
 
-type loginRes struct {
+type loginResp struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-}
-
-type managerRes struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    struct {
-		Token string `json:"token"`
-	} `json:"data"`
-	MS int64 `json:"ms"`
 }
 
 // Login User login
@@ -39,35 +30,34 @@ func Login(ctx *gin.Context) {
 
 // LoginCheck User login
 func LoginCheck(ctx *gin.Context) {
-	req := loginReq{}
-	err := ctx.BindJSON(&req)
-	if err != nil {
-		// todo: add log
-	}
-	reqData, err := manager.Request("POST", "/user/login", nil, req)
-	if err != nil {
-		ctx.JSON(http.StatusOK, loginRes{
+	var (
+		httpStatus = http.StatusForbidden
+		httResp    = loginResp{
 			Status:  -1,
-			Message: "error: " + err.Error(),
-		})
+			Message: "Login failed",
+		}
+	)
+	defer func() {
+		ctx.JSON(httpStatus, httResp)
+	}()
+	loginData := loginInfo{}
+	err := ctx.BindJSON(&loginData)
+	if err != nil {
 		return
 	}
-	manager := managerRes{}
-	err = json.Unmarshal(reqData, &manager)
-	if manager.Data.Token == "" {
-		ctx.JSON(http.StatusOK, loginRes{
-			Status:  -1,
-			Message: "The password is incorrect or the user does not exist.",
-		})
+	// login
+	uid, err := DoLogin(loginData)
+	if err != nil {
 		return
 	}
 	session := sessions.Default(ctx)
-	session.Set("token", manager.Data.Token)
+	session.Set("uid", uid)
 	session.Save()
-	ctx.JSON(http.StatusOK, loginRes{
+	httpStatus = http.StatusOK
+	httResp = loginResp{
 		Status:  0,
 		Message: "Success",
-	})
+	}
 	return
 }
 
@@ -78,4 +68,40 @@ func Logout(ctx *gin.Context) {
 	session.Save()
 	ctx.Redirect(http.StatusFound, "/login")
 	return
+}
+
+// DoLogin DoLogin
+func DoLogin(data loginInfo) (string, error) {
+	var (
+		err error
+		uid string
+	)
+	// login type
+	switch data.Type {
+	case "test":
+		uid, err = loginTest(data)
+	}
+	return uid, err
+}
+
+// loginTest loginTest
+func loginTest(data loginInfo) (string, error) {
+	db, _ := dao.GetDB("edge")
+	stmt, _ := db.Prepare("SELECT `uid`,`token`,`ext` FROM `user_auth` WHERE `identity` = ? AND `type` = ? AND `status` = ?")
+	defer stmt.Close()
+
+	rows := stmt.QueryRow(data.Identity, data.Type, 0)
+
+	var uid string
+	var token string
+	var ext string
+
+	err := rows.Scan(&uid, &token, &ext)
+	if err != nil {
+		return "", err
+	}
+	if token != data.Token {
+		return "", errors.New("Verification failed")
+	}
+	return uid, nil
 }
