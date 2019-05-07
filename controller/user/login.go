@@ -1,10 +1,10 @@
-package service
+package user
 
 import (
 	"errors"
 	"net/http"
 
-	"github.com/EdgeSmart/EdgeControl/service/dao"
+	"github.com/EdgeSmart/EdgeControl/dao"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )

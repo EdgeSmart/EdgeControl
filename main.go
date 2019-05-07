@@ -1,12 +1,11 @@
 package main
 
 import (
+	"github.com/EdgeSmart/EdgeControl/controller/admin"
+	"github.com/EdgeSmart/EdgeControl/controller/dev"
+	"github.com/EdgeSmart/EdgeControl/controller/index"
+	"github.com/EdgeSmart/EdgeControl/controller/user"
 	"github.com/EdgeSmart/EdgeControl/middleware"
-	"github.com/EdgeSmart/EdgeControl/service"
-	"github.com/EdgeSmart/EdgeControl/service/admin"
-	"github.com/EdgeSmart/EdgeControl/service/dev"
-	"github.com/EdgeSmart/EdgeControl/service/index"
-	"github.com/EdgeSmart/EdgeControl/service/user"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -21,9 +20,9 @@ func main() {
 	// index
 	app.Any("/", index.Index)
 	// login
-	app.GET("/login", service.Login)
-	app.POST("/login", service.LoginCheck)
-	app.GET("/logout", service.Logout)
+	app.GET("/login", user.Login)
+	app.POST("/login", user.LoginCheck)
+	app.GET("/logout", user.Logout)
 
 	// admin
 	adminGroup := app.Group("/admin")

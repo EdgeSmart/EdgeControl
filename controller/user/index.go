@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/EdgeSmart/EdgeControl/data/menu"
+	"github.com/EdgeSmart/EdgeControl/service/menu"
 	"github.com/gin-gonic/gin"
 )
 

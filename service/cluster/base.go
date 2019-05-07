@@ -3,7 +3,7 @@ package cluster
 import (
 	"encoding/json"
 
-	"github.com/EdgeSmart/EdgeControl/data/manager"
+	"github.com/EdgeSmart/EdgeControl/service/manager"
 )
 
 type ReqParam struct {

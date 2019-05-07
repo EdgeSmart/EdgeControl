@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/EdgeSmart/EdgeControl/data/cluster"
-	"github.com/EdgeSmart/EdgeControl/data/menu"
+	"github.com/EdgeSmart/EdgeControl/service/cluster"
+	"github.com/EdgeSmart/EdgeControl/service/menu"
 	"github.com/gin-gonic/gin"
 )
 

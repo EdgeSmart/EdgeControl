@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/EdgeSmart/EdgeControl/service"
+	"github.com/EdgeSmart/EdgeControl/controller/user"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ func LoginControl(ctx *gin.Context) {
 					return
 				}
 			}
-			service.Login(ctx)
+			user.Login(ctx)
 			ctx.AbortWithStatus(http.StatusOK)
 			return
 		}
