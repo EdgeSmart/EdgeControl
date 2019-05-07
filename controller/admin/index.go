@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Index Index
 func Index(ctx *gin.Context) {
 	menu.GetMenu(ctx)
 	ctx.HTML(200, "admin_index.tmpl", gin.H{

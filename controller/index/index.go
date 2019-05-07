@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Index Index
 func Index(ctx *gin.Context) {
 	ctx.HTML(200, "index.tmpl", gin.H{
 		"title": "首页",

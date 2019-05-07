@@ -27,6 +27,7 @@ func main() {
 	// admin
 	adminGroup := app.Group("/admin")
 	adminGroup.GET("/", admin.Index)
+	adminGroup.GET("/cluster", admin.ClusterList)
 
 	// user
 	userGroup := app.Group("/user")
