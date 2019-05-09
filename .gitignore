@@ -14,3 +14,5 @@
 # other file and dir
 conf/db/edge.toml
 vendor
+template/dist/*
+template/node_modules/*

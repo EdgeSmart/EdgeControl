@@ -16,8 +16,9 @@ type loginInfo struct {
 }
 
 type loginResp struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 // Login User login
@@ -57,6 +58,10 @@ func LoginCheck(ctx *gin.Context) {
 	httResp = loginResp{
 		Status:  0,
 		Message: "Success",
+		Data: map[string]string{
+			"name":   "peter",
+			"avatar": "https://raw.githubusercontent.com/taylorchen709/markdown-images/master/vueadmin/user.png",
+		},
 	}
 	return
 }
@@ -71,10 +76,10 @@ func Logout(ctx *gin.Context) {
 }
 
 // DoLogin DoLogin
-func DoLogin(data loginInfo) (string, error) {
+func DoLogin(data loginInfo) (uint64, error) {
 	var (
 		err error
-		uid string
+		uid uint64
 	)
 	// login type
 	switch data.Type {
@@ -85,23 +90,23 @@ func DoLogin(data loginInfo) (string, error) {
 }
 
 // loginTest loginTest
-func loginTest(data loginInfo) (string, error) {
+func loginTest(data loginInfo) (uint64, error) {
 	db, _ := dao.GetDB("edge")
 	stmt, _ := db.Prepare("SELECT `uid`,`token`,`ext` FROM `user_auth` WHERE `identity` = ? AND `type` = ? AND `status` = ?")
 	defer stmt.Close()
 
 	rows := stmt.QueryRow(data.Identity, data.Type, 0)
 
-	var uid string
+	var uid uint64
 	var token string
 	var ext string
 
 	err := rows.Scan(&uid, &token, &ext)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	if token != data.Token {
-		return "", errors.New("Verification failed")
+		return 0, errors.New("Verification failed")
 	}
 	return uid, nil
 }

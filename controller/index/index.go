@@ -7,7 +7,7 @@ import (
 
 // Index Index
 func Index(ctx *gin.Context) {
-	ctx.HTML(200, "index.tmpl", gin.H{
+	ctx.HTML(200, "index.html", gin.H{
 		"title": "首页",
 		"menu":  menu.GetMenu(ctx),
 	})

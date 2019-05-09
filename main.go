@@ -13,7 +13,7 @@ import (
 
 func main() {
 	app := gin.Default()
-	app.Static("/statics", "./templates/statics")
+	app.Static("/static", "./template/dist/static")
 	store := cookie.NewStore([]byte("secret"))
 	app.Use(sessions.Sessions("session_id", store))
 	app.Use(middleware.LoginControl)
@@ -39,7 +39,7 @@ func main() {
 	devGroup := app.Group("/dev")
 	devGroup.GET("/", dev.Index)
 
-	app.LoadHTMLGlob("./templates/*/*.tmpl")
+	app.LoadHTMLFiles("./template/dist/index.html")
 
 	app.Run(":8000")
 }
